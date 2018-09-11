@@ -1,0 +1,25 @@
+#!/bin/bash
+
+IN="$1"
+OUT="${1%\.*}.mp4"
+
+if [ $# -ne 1 ]; then
+	echo "Syntax: convert2mp4 <file>"
+	exit 1
+fi
+
+if [ -e "$OUT" ]; then
+	echo "Output file $OUT already exists, not overwriting anything."
+	exit 1
+fi
+
+echo "Converting $IN to $OUT"
+
+ffmpeg -i "$IN" -c:v libx264 -c:a aac -f mp4 \
+	-crf 20 -preset:v veryslow "$OUT"
+
+if [ $? ]; then
+	echo "The conversion succeeded!"
+else
+	echo "The conversion did not succeed, see output above."
+fi
